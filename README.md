@@ -30,15 +30,35 @@ docker-compose up --build -d
 2. Connect to the running MongoDB cluster from the MongoDB Shell (the shell will attempt to connect to the first of the two `mongos` endpoints) and then issue the command to print the states of the sharded cluster:
 
 ```
-mongosh --port 27017
+mongosh --port 27030
 ```
 
 ```
 sh.status()
 ```
 
-_Note_: Use port 27018 instead, above, if you want to connect to the second `mongos` endpoint.
+_Note_: Use port 27031 instead, above, if you want to connect to the second `mongos` endpoint.
 
+## Create pathleader-system user for local development
+
+```shell
+mongosh --port 27020 --authenticationDatabase admin --eval '
+  db = db.getSiblingDB("admin");
+  db.createUser({
+    user: "pathleader-system",
+    pwd: "pathleader",
+    roles: [
+      { db: "admin", role: "readWrite" },
+      { db: "admin", role: "dbAdmin" },
+      { db: "admin", role: "userAdminAnyDatabase" },
+      { db: "admin", role: "readWriteAnyDatabase" },
+      { db: "admin", role: "dbOwner" },
+      { db: "admin", role: "clusterAdmin" }
+    ],
+    mechanisms: ["SCRAM-SHA-1"]
+  })
+'
+```
 
 ## Tips
 
