@@ -9,4 +9,4 @@ RUN chmod u+x /usr/local/bin/mongod-start.sh /usr/local/bin/mongod-runextra.sh
 
 ENTRYPOINT ["mongod-start.sh"]
 
-CMD mongod -f /etc/mongod.conf
+CMD mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf
