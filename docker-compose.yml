@@ -1,5 +1,3 @@
-name: pathleader-dtp-tenant-db-cluster
-
 services:
 
   ######## MONGODB SHARD0 ########
@@ -171,7 +169,7 @@ services:
     expose:
       - "27017"
     ports:
-      - "27030:27017"  # Map the host workstation's port 27017 to the docker instance exposed port 27017 for 'direct' mongos access
+      - "${MONGOS_PORT0}:27017"  # Map the host workstation's port 27017 to the docker instance exposed port 27017 for 'direct' mongos access
 
   mongos-router1:
     build:
@@ -184,7 +182,8 @@ services:
     expose:
       - "27017"
     ports:
-      - "27031:27017"  # Map the host workstation's port 27018 to the docker instance exposed port 27017 for 'direct' mongos access
+      - "${MONGOS_PORT1}:27017"  # Map the host workstation's port 27018 to the docker instance exposed port 27017 for 'direct' mongos access
 
 networks:
-  internalnetwork: {}
+  internalnetwork:
+    driver: bridge
