@@ -1,4 +1,4 @@
-FROM mongo:latest
+FROM mongo:8.0.12-4
 
 RUN apt-get update && apt-get -q install -y
 
