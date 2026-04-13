@@ -17,6 +17,11 @@ services:
       - DO_INIT_REPSET=true
     expose:
       - "27017"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
 
   shard0-replica1:
     build:
@@ -32,6 +37,11 @@ services:
       - REPSET_NAME=shard0
     expose:
       - "27017"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
 
   shard0-replica2:
     build:
@@ -47,6 +57,11 @@ services:
       - REPSET_NAME=shard0
     expose:
       - "27017"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
 
   ######## MONGODB SHARD1 ########
 
@@ -65,6 +80,11 @@ services:
       - DO_INIT_REPSET=true
     expose:
       - "27017"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
 
   shard1-replica1:
     build:
@@ -80,6 +100,11 @@ services:
       - REPSET_NAME=shard1
     expose:
       - "27017"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
 
   shard1-replica2:
     build:
@@ -95,6 +120,11 @@ services:
       - REPSET_NAME=shard1
     expose:
       - "27017"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
 
   ######## MONGODB CONFIGDB ########
 
@@ -113,6 +143,11 @@ services:
       - DO_INIT_REPSET=true
     expose:
       - "27017"
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+          cpus: '0.3'
 
   configdb-replica1:
     build:
@@ -128,6 +163,11 @@ services:
       - REPSET_NAME=configdb
     expose:
       - "27017"
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+          cpus: '0.3'
 
   configdb-replica2:
     build:
@@ -143,6 +183,11 @@ services:
       - REPSET_NAME=configdb
     expose:
       - "27017"
+    deploy:
+      resources:
+        limits:
+          memory: 192M
+          cpus: '0.3'
 
   ######## MONGODB MONGOS ROUTERS ########
 
@@ -170,6 +215,11 @@ services:
       - "27017"
     ports:
       - "${MONGOS_PORT0}:27017"  # Map the host workstation's port 27017 to the docker instance exposed port 27017 for 'direct' mongos access
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.3'
 
   mongos-router1:
     build:
@@ -183,6 +233,11 @@ services:
       - "27017"
     ports:
       - "${MONGOS_PORT1}:27017"  # Map the host workstation's port 27018 to the docker instance exposed port 27017 for 'direct' mongos access
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.3'
 
 networks:
   internalnetwork:
