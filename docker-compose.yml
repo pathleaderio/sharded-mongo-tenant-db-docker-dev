@@ -8,6 +8,7 @@ services:
     command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard0
     volumes:
       - ./mongod/mongod.conf:/etc/mongod.conf
+      - shard0_replica0_data:/data/db
     networks:
       internalnetwork:
         aliases:
@@ -20,8 +21,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
-          cpus: '0.5'
+          memory: 1280M
+          cpus: '1.0'
 
   shard0-replica1:
     build:
@@ -29,6 +30,7 @@ services:
     command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard0
     volumes:
       - ./mongod/mongod.conf:/etc/mongod.conf
+      - shard0_replica1_data:/data/db
     networks:
       internalnetwork:
         aliases:
@@ -40,8 +42,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
-          cpus: '0.5'
+          memory: 1280M
+          cpus: '1.0'
 
   shard0-replica2:
     build:
@@ -49,6 +51,7 @@ services:
     command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard0
     volumes:
       - ./mongod/mongod.conf:/etc/mongod.conf
+      - shard0_replica2_data:/data/db
     networks:
       internalnetwork:
         aliases:
@@ -60,8 +63,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
-          cpus: '0.5'
+          memory: 1280M
+          cpus: '1.0'
 
   ######## MONGODB SHARD1 ########
 
@@ -71,6 +74,7 @@ services:
     command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard1
     volumes:
       - ./mongod/mongod.conf:/etc/mongod.conf
+      - shard1_replica0_data:/data/db
     networks:
       internalnetwork:
         aliases:
@@ -83,8 +87,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
-          cpus: '0.5'
+          memory: 1280M
+          cpus: '1.0'
 
   shard1-replica1:
     build:
@@ -92,6 +96,7 @@ services:
     command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard1
     volumes:
       - ./mongod/mongod.conf:/etc/mongod.conf
+      - shard1_replica1_data:/data/db
     networks:
       internalnetwork:
         aliases:
@@ -103,8 +108,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
-          cpus: '0.5'
+          memory: 1280M
+          cpus: '1.0'
 
   shard1-replica2:
     build:
@@ -112,6 +117,7 @@ services:
     command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard1
     volumes:
       - ./mongod/mongod.conf:/etc/mongod.conf
+      - shard1_replica2_data:/data/db
     networks:
       internalnetwork:
         aliases:
@@ -123,8 +129,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
-          cpus: '0.5'
+          memory: 1280M
+          cpus: '1.0'
 
   ######## MONGODB CONFIGDB ########
 
@@ -134,6 +140,7 @@ services:
     command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --configsvr --replSet configdb
     volumes:
       - ./mongod/mongod.conf:/etc/mongod.conf
+      - configdb_replica0_data:/data/db
     networks:
       internalnetwork:
         aliases:
@@ -155,6 +162,7 @@ services:
     command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --configsvr --replSet configdb
     volumes:
       - ./mongod/mongod.conf:/etc/mongod.conf
+      - configdb_replica1_data:/data/db
     networks:
       internalnetwork:
         aliases:
@@ -175,6 +183,7 @@ services:
     command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --configsvr --replSet configdb
     volumes:
       - ./mongod/mongod.conf:/etc/mongod.conf
+      - configdb_replica2_data:/data/db
     networks:
       internalnetwork:
         aliases:
@@ -242,3 +251,18 @@ services:
 networks:
   internalnetwork:
     driver: bridge
+
+volumes:
+  # Per-replica named volumes for /data/db so MongoDB state survives
+  # `docker compose down/up` cycles. Without these the data lives only
+  # in the container's writable layer and is destroyed on container
+  # removal.
+  shard0_replica0_data:
+  shard0_replica1_data:
+  shard0_replica2_data:
+  shard1_replica0_data:
+  shard1_replica1_data:
+  shard1_replica2_data:
+  configdb_replica0_data:
+  configdb_replica1_data:
+  configdb_replica2_data:
