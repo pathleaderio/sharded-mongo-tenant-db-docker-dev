@@ -24,48 +24,6 @@ services:
           memory: 1280M
           cpus: '1.0'
 
-  shard0-replica1:
-    build:
-      context: mongod
-    command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard0
-    volumes:
-      - ./mongod/mongod.conf:/etc/mongod.conf
-      - shard0_replica1_data:/data/db
-    networks:
-      internalnetwork:
-        aliases:
-          - shard0-replica1
-    environment:
-      - REPSET_NAME=shard0
-    expose:
-      - "27017"
-    deploy:
-      resources:
-        limits:
-          memory: 1280M
-          cpus: '1.0'
-
-  shard0-replica2:
-    build:
-      context: mongod
-    command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard0
-    volumes:
-      - ./mongod/mongod.conf:/etc/mongod.conf
-      - shard0_replica2_data:/data/db
-    networks:
-      internalnetwork:
-        aliases:
-          - shard0-replica2
-    environment:
-      - REPSET_NAME=shard0
-    expose:
-      - "27017"
-    deploy:
-      resources:
-        limits:
-          memory: 1280M
-          cpus: '1.0'
-
   ######## MONGODB SHARD1 ########
 
   shard1-replica0:
@@ -82,48 +40,6 @@ services:
     environment:
       - REPSET_NAME=shard1
       - DO_INIT_REPSET=true
-    expose:
-      - "27017"
-    deploy:
-      resources:
-        limits:
-          memory: 1280M
-          cpus: '1.0'
-
-  shard1-replica1:
-    build:
-      context: mongod
-    command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard1
-    volumes:
-      - ./mongod/mongod.conf:/etc/mongod.conf
-      - shard1_replica1_data:/data/db
-    networks:
-      internalnetwork:
-        aliases:
-          - shard1-replica1
-    environment:
-      - REPSET_NAME=shard1
-    expose:
-      - "27017"
-    deploy:
-      resources:
-        limits:
-          memory: 1280M
-          cpus: '1.0'
-
-  shard1-replica2:
-    build:
-      context: mongod
-    command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --shardsvr --replSet shard1
-    volumes:
-      - ./mongod/mongod.conf:/etc/mongod.conf
-      - shard1_replica2_data:/data/db
-    networks:
-      internalnetwork:
-        aliases:
-          - shard1-replica2
-    environment:
-      - REPSET_NAME=shard1
     expose:
       - "27017"
     deploy:
@@ -156,70 +72,22 @@ services:
           memory: 192M
           cpus: '0.3'
 
-  configdb-replica1:
-    build:
-      context: mongod
-    command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --configsvr --replSet configdb
-    volumes:
-      - ./mongod/mongod.conf:/etc/mongod.conf
-      - configdb_replica1_data:/data/db
-    networks:
-      internalnetwork:
-        aliases:
-          - configdb-replica1
-    environment:
-      - REPSET_NAME=configdb
-    expose:
-      - "27017"
-    deploy:
-      resources:
-        limits:
-          memory: 192M
-          cpus: '0.3'
-
-  configdb-replica2:
-    build:
-      context: mongod
-    command: mongod --setParameter "transactionLifetimeLimitSeconds=600" -f /etc/mongod.conf --configsvr --replSet configdb
-    volumes:
-      - ./mongod/mongod.conf:/etc/mongod.conf
-      - configdb_replica2_data:/data/db
-    networks:
-      internalnetwork:
-        aliases:
-          - configdb-replica2
-    environment:
-      - REPSET_NAME=configdb
-    expose:
-      - "27017"
-    deploy:
-      resources:
-        limits:
-          memory: 192M
-          cpus: '0.3'
-
   ######## MONGODB MONGOS ROUTERS ########
 
   mongos-router0:
     build:
       context: mongos
-    command: mongos --port 27017 --bind_ip 0.0.0.0 --configdb "configdb/configdb-replica0:27017,configdb-replica1:27017,configdb-replica2:27017"
+    command: mongos --port 27017 --bind_ip 0.0.0.0 --configdb "configdb/configdb-replica0:27017"
     depends_on:
       - shard0-replica0
-      - shard0-replica1
-      - shard0-replica2
       - shard1-replica0
-      - shard1-replica1
-      - shard1-replica2
       - configdb-replica0
-      - configdb-replica1
-      - configdb-replica2
     networks:
       internalnetwork:
         aliases:
           - mongos-router0
     environment:
-      - SHARD_LIST=shard0/shard0-replica0:27017,shard0-replica0:27017,shard0-replica0:27017;shard1/shard1-replica0:27017,shard1-replica0:27017,shard1-replica0:27017
+      - SHARD_LIST=shard0/shard0-replica0:27017;shard1/shard1-replica0:27017
     expose:
       - "27017"
     ports:
@@ -233,7 +101,7 @@ services:
   mongos-router1:
     build:
       context: mongos
-    command: mongos --port 27017 --bind_ip 0.0.0.0 --configdb "configdb/configdb-replica0:27017,configdb-replica1:27017,configdb-replica2:27017"
+    command: mongos --port 27017 --bind_ip 0.0.0.0 --configdb "configdb/configdb-replica0:27017"
     networks:
       internalnetwork:
         aliases:
@@ -258,11 +126,5 @@ volumes:
   # in the container's writable layer and is destroyed on container
   # removal.
   shard0_replica0_data:
-  shard0_replica1_data:
-  shard0_replica2_data:
   shard1_replica0_data:
-  shard1_replica1_data:
-  shard1_replica2_data:
   configdb_replica0_data:
-  configdb_replica1_data:
-  configdb_replica2_data:
