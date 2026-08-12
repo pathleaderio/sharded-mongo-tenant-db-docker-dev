@@ -76,7 +76,7 @@ services:
     expose:
       - "27017"
     ports:
-      - "${MONGOS_PORT0}:27017"  # Map the host workstation's port 27017 to the docker instance exposed port 27017 for 'direct' mongos access
+      - "127.0.0.1:${MONGOS_PORT0}:27017"  # Map the host workstation's port 27017 to the docker instance exposed port 27017 for 'direct' mongos access
 
   mongos-router1:
     build:
@@ -89,7 +89,7 @@ services:
     expose:
       - "27017"
     ports:
-      - "${MONGOS_PORT1}:27017"  # Map the host workstation's port 27018 to the docker instance exposed port 27017 for 'direct' mongos access
+      - "127.0.0.1:${MONGOS_PORT1}:27017"  # Map the host workstation's port 27018 to the docker instance exposed port 27017 for 'direct' mongos access
 
 networks:
   internalnetwork:
